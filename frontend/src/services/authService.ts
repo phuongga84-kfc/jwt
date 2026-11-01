@@ -43,6 +43,26 @@ export const authService = {
     const res = await api.get<{ user: User }>("users/me");
     return res.data.user;
   },
+  getUsers: async () => {
+    const res = await api.get<{ users: User[] }>("users");
+    return res.data.users;
+  },
+  updateUser: async (
+    userId: string,
+    details: Pick<User, "username" | "displayName"> & {
+      email: string;
+      phone: string;
+    },
+  ) => {
+    const res = await api.patch<{ user: User }>(
+      `users/${encodeURIComponent(userId)}`,
+      details,
+    );
+    return res.data.user;
+  },
+  deleteUser: async (userId: string) => {
+    await api.delete(`users/${encodeURIComponent(userId)}`);
+  },
   Logout: async () => {
     return api.post("auth/logout", {}, {withCredentials: true})
   }
